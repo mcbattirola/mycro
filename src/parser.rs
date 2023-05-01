@@ -7,11 +7,11 @@ pub fn parse_commands(content: &str) -> (HashMap<String, Vec<Vec<Key>>>, String)
 
     content.lines().for_each(|line| {
         // ignore comments
-        if line.starts_with("#") {
+        if line.starts_with('#') {
             return;
         }
 
-        let parts: Vec<&str> = line.split("=").collect();
+        let parts: Vec<&str> = line.split('=').collect();
         if parts.len() < 2 {
             println!("malformed line '{}'", line);
             return;
@@ -39,7 +39,7 @@ pub fn parse_commands(content: &str) -> (HashMap<String, Vec<Vec<Key>>>, String)
             vec![Key::KeyD],
         ],
     );
-    return (commands, String::from("|>"));
+    (commands, String::from("|>"))
 }
 
 fn str_to_keys(s: &str) -> Vec<Vec<Key>> {
@@ -81,5 +81,5 @@ fn str_to_keys(s: &str) -> Vec<Vec<Key>> {
             _ => continue,
         }
     }
-    return keys;
+    keys
 }

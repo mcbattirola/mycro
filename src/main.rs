@@ -27,61 +27,57 @@ struct Mycro {
 
 impl Mycro {
     fn handle_event(&mut self, event: Event) {
-        match event.name {
-            Some(key) => {
-                println!(">>> state: {:?}", self.state);
-                match self.state {
-                    CommandState::ReadingCommand => {
-                        // restart reading command on white space
-                        if key == " " {
-                            self.state = CommandState::ReadingStarter(0);
-                            self.buffer = String::new();
-                        }
-                        self.buffer += &key;
-
-                        // for now, lets search the hashmap on each keystroke
-                        let cmd = match self.commands.get(&self.buffer) {
-                            Some(c) => c,
-                            None => {
-                                return;
-                            }
-                        };
-
-                        // delete what is in the buffer and emit the command
-                        delete_keys(&self.buffer.len() + self.starter.len());
-                        send_keys(&cmd);
-
-                        self.buffer = String::new();
+        if let Some(key) = event.name {
+            println!(">>> state: {:?}", self.state);
+            match self.state {
+                CommandState::ReadingCommand => {
+                    // restart reading command on white space
+                    if key == " " {
                         self.state = CommandState::ReadingStarter(0);
+                        self.buffer = String::new();
                     }
-                    CommandState::ReadingStarter(index) => {
-                        let c = match self.starter.chars().nth(index) {
-                            Some(c) => c,
-                            None => return,
-                        };
+                    self.buffer += &key;
 
-                        if key == c.to_string() {
-                            // if found the last starter char, start reading command
-                            if index + 1 == self.starter.len().try_into().unwrap() {
-                                self.state = CommandState::ReadingCommand;
-                                return;
-                            }
-
-                            self.state = CommandState::ReadingStarter(index + 1);
+                    // for now, lets search the hashmap on each keystroke
+                    let cmd = match self.commands.get(&self.buffer) {
+                        Some(c) => c,
+                        None => {
                             return;
                         }
-                        self.state = CommandState::ReadingStarter(0);
+                    };
+
+                    // delete what is in the buffer and emit the command
+                    delete_keys(self.buffer.len() + self.starter.len());
+                    send_keys(cmd);
+
+                    self.buffer = String::new();
+                    self.state = CommandState::ReadingStarter(0);
+                }
+                CommandState::ReadingStarter(index) => {
+                    let c = match self.starter.chars().nth(index) {
+                        Some(c) => c,
+                        None => return,
+                    };
+
+                    if key == c.to_string() {
+                        // if found the last starter char, start reading command
+                        if index + 1 == self.starter.len() {
+                            self.state = CommandState::ReadingCommand;
+                            return;
+                        }
+
+                        self.state = CommandState::ReadingStarter(index + 1);
                         return;
                     }
+                    self.state = CommandState::ReadingStarter(0);
                 }
             }
-            None => (),
         }
     }
 }
 
 lazy_static! {
-    static ref MYCRO: RwLock<Mycro> = RwLock::new(read_config("/home/matheus/.config/mycro/mycro")); // TODO
+    static ref MYCRO: RwLock<Mycro> = RwLock::new(read_config("/home/matheus/.config/mycro")); // TODO
 }
 
 fn handle_event(event: Event) {
@@ -90,7 +86,6 @@ fn handle_event(event: Event) {
 }
 
 const DEFAULT_STARTER: &str = "|>";
-//const KEY_MAP: HashMap<str, Key> = HashMap::new();
 
 fn main() {
     match listen(handle_event) {
@@ -103,15 +98,16 @@ fn read_config(filepath: &str) -> Mycro {
     let contents = fs::read_to_string(filepath).expect("Config file not found");
 
     let (commands, mut starter) = parser::parse_commands(&contents);
-    if starter == "" {
+    if starter.is_empty() {
         starter = String::from(DEFAULT_STARTER);
     }
-    return Mycro {
+
+    Mycro {
         starter,
         commands,
         buffer: String::new(),
         state: CommandState::ReadingStarter(0),
-    };
+    }
 }
 
 fn send(event_type: &EventType) {
@@ -122,11 +118,11 @@ fn send(event_type: &EventType) {
             println!("We could not send {:?}", event_type);
         }
     }
-    // Let ths OS catchup (at least MacOS)
+    // Let the OS catchup
     std::thread::sleep(delay);
 }
 
-fn send_keys(cmd: &Vec<Vec<Key>>) {
+fn send_keys(cmd: &[Vec<Key>]) {
     for k in cmd.iter() {
         // press all keys
         for sk in k.iter() {
