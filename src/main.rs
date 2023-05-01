@@ -4,6 +4,8 @@ use rdev::{listen, simulate, Event, EventType, Key};
 use std::collections::HashMap;
 use std::sync::RwLock;
 
+pub mod parser;
+
 #[derive(Debug)]
 enum CommandState {
     ReadingStarter(usize), // reading, holds current index
@@ -93,25 +95,17 @@ fn main() {
 }
 
 fn read_config(_filepath: &str) -> Mycro {
-    let mut commands = HashMap::new();
-    commands.insert(
-        String::from("hw"),
-        vec![
-            Key::KeyH,
-            Key::KeyE,
-            Key::KeyL,
-            Key::KeyL,
-            Key::KeyO,
-            Key::Space,
-            Key::KeyW,
-            Key::KeyO,
-            Key::KeyR,
-            Key::KeyL,
-            Key::KeyD,
-        ],
+    // TODO read file
+    let (commands, mut starter) = parser::parse_commands(
+        "
+email=user@email.com
+",
     );
+    if starter == "" {
+        starter = String::from(DEFAULT_STARTER);
+    }
     return Mycro {
-        starter: String::from(DEFAULT_STARTER),
+        starter,
         commands,
         buffer: String::new(),
         state: CommandState::ReadingStarter(0),
