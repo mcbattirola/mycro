@@ -1,6 +1,11 @@
 # Mycro
 
-Simple macros.
+Simple macros for Linux.
+
+```
+# replace |>mail for user@email.com:
+mail=user@email.com
+```
 
 ## Usage
 
@@ -27,4 +32,6 @@ workemail=user@work.com
 - [ ] Read from not hardcoded path
 - [x] Emit keyboard events (write)
 - [ ] Add all possible keyboard keys
+  - [ ] Uppercase
 - [ ] Add tests
+- [ ] Fix backspacing during command starter 
