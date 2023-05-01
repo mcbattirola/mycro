@@ -2,6 +2,7 @@ use core::time::Duration;
 use lazy_static::lazy_static;
 use rdev::{listen, simulate, Event, EventType, Key};
 use std::collections::HashMap;
+use std::fs;
 use std::sync::RwLock;
 
 pub mod parser;
@@ -14,7 +15,12 @@ enum CommandState {
 
 struct Mycro {
     starter: String,
-    commands: HashMap<String, Vec<Key>>,
+    // comands is a hashmap from the macro to the list of keys that should
+    // emited.
+    // Commands are a vector of vectors of keys because some characters
+    // may result in multiple keys, like a '@' that needs a left shift and
+    // a '2' pressed together.
+    commands: HashMap<String, Vec<Vec<Key>>>,
     buffer: String,
     state: CommandState,
 }
@@ -40,7 +46,6 @@ impl Mycro {
                                 return;
                             }
                         };
-                        //println!("found a command to use: {}", cmd);
 
                         // delete what is in the buffer and emit the command
                         delete_keys(&self.buffer.len() + self.starter.len());
@@ -76,7 +81,7 @@ impl Mycro {
 }
 
 lazy_static! {
-    static ref MYCRO: RwLock<Mycro> = RwLock::new(read_config("$HOME/.config/mycro"));
+    static ref MYCRO: RwLock<Mycro> = RwLock::new(read_config("/home/matheus/.config/mycro/mycro")); // TODO
 }
 
 fn handle_event(event: Event) {
@@ -94,13 +99,10 @@ fn main() {
     }
 }
 
-fn read_config(_filepath: &str) -> Mycro {
-    // TODO read file
-    let (commands, mut starter) = parser::parse_commands(
-        "
-email=user@email.com
-",
-    );
+fn read_config(filepath: &str) -> Mycro {
+    let contents = fs::read_to_string(filepath).expect("Config file not found");
+
+    let (commands, mut starter) = parser::parse_commands(&contents);
     if starter == "" {
         starter = String::from(DEFAULT_STARTER);
     }
@@ -124,10 +126,16 @@ fn send(event_type: &EventType) {
     std::thread::sleep(delay);
 }
 
-fn send_keys(cmd: &Vec<Key>) {
+fn send_keys(cmd: &Vec<Vec<Key>>) {
     for k in cmd.iter() {
-        send(&EventType::KeyPress(*k));
-        send(&EventType::KeyRelease(*k));
+        // press all keys
+        for sk in k.iter() {
+            send(&EventType::KeyPress(*sk));
+        }
+        // release all keys
+        for sk in k.iter() {
+            send(&EventType::KeyRelease(*sk));
+        }
     }
 }
 
