@@ -6,7 +6,7 @@ starter=|>
 
 # a macro is declared as macro=result:
 wl=hello, world
-# this means that typing `|>hw` will trigger the macro and replace it with `\>hello. world`
+# this means that typing `|>hw` will trigger the macro and replace it with `\>hello. world`.
 
 email=user@mail.com
 workemail=user@work.com
