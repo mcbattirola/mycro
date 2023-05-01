@@ -28,14 +28,21 @@ struct Mycro {
 impl Mycro {
     fn handle_event(&mut self, event: Event) {
         if let Some(key) = event.name {
-            println!(">>> state: {:?}", self.state);
             match self.state {
                 CommandState::ReadingCommand => {
                     // restart reading command on white space
                     if key == " " {
                         self.state = CommandState::ReadingStarter(0);
                         self.buffer = String::new();
+                        return;
                     }
+
+                    // backspace
+                    if key == "\u{8}" {
+                        self.buffer.remove(self.buffer.len() - 1);
+                        return;
+                    }
+
                     self.buffer += &key;
 
                     // for now, lets search the hashmap on each keystroke
@@ -136,7 +143,6 @@ fn send_keys(cmd: &[Vec<Key>]) {
 }
 
 fn delete_keys(qty: usize) {
-    println!("delete {}", qty);
     for _ in 0..qty {
         send(&EventType::KeyPress(Key::Backspace));
         send(&EventType::KeyRelease(Key::Backspace));

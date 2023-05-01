@@ -23,5 +23,8 @@ workemail=user@work.com
 
 ## TODO
 
-- [ ] Read config file
-- [ ] Emit keyboard events (write)
+- [x] Read config file
+- [ ] Read from not hardcoded path
+- [x] Emit keyboard events (write)
+- [ ] Add all possible keyboard keys
+- [ ] Add tests

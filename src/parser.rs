@@ -11,7 +11,7 @@ pub fn parse_commands(content: &str) -> (HashMap<String, Vec<Vec<Key>>>, String)
             return;
         }
 
-        let parts: Vec<&str> = line.split('=').collect();
+        let mut parts: Vec<&str> = line.split('=').collect();
         if parts.len() < 2 {
             println!("malformed line '{}'", line);
             return;
@@ -21,7 +21,18 @@ pub fn parse_commands(content: &str) -> (HashMap<String, Vec<Vec<Key>>>, String)
             starter = parts[1].to_string();
         }
 
-        commands.insert(String::from(parts[0]), str_to_keys(parts[1]));
+        let cmd_macro = parts.remove(0);
+        let mut cmd_result = String::new();
+        for i in 0..parts.len() {
+            // add back the '=' that was splitted
+            if i > 0 {
+                cmd_result += "="
+            }
+            cmd_result += parts[i];
+        }
+        // join remaining parts as they may contain a '=' that got splited
+
+        commands.insert(String::from(cmd_macro), str_to_keys(&cmd_result));
     });
     commands.insert(
         String::from("hw"),
@@ -39,7 +50,7 @@ pub fn parse_commands(content: &str) -> (HashMap<String, Vec<Vec<Key>>>, String)
             vec![Key::KeyD],
         ],
     );
-    (commands, String::from("|>"))
+    (commands, starter)
 }
 
 fn str_to_keys(s: &str) -> Vec<Vec<Key>> {
@@ -76,8 +87,32 @@ fn str_to_keys(s: &str) -> Vec<Vec<Key>> {
             'x' => keys.push(vec![Key::KeyX]),
             'y' => keys.push(vec![Key::KeyY]),
             'z' => keys.push(vec![Key::KeyZ]),
+            '!' => keys.push(vec![Key::ShiftLeft, Key::Num1]),
             '@' => keys.push(vec![Key::ShiftLeft, Key::Num2]),
+            '#' => keys.push(vec![Key::ShiftLeft, Key::Num3]),
+            '$' => keys.push(vec![Key::ShiftLeft, Key::Num4]),
+            '%' => keys.push(vec![Key::ShiftLeft, Key::Num5]),
+            '^' => keys.push(vec![Key::ShiftLeft, Key::Num6]),
+            '&' => keys.push(vec![Key::ShiftLeft, Key::Num7]),
+            '*' => keys.push(vec![Key::ShiftLeft, Key::Num8]),
+            '(' => keys.push(vec![Key::ShiftLeft, Key::Num9]),
+            ')' => keys.push(vec![Key::ShiftLeft, Key::Num0]),
+            ',' => keys.push(vec![Key::Comma]),
+            '<' => keys.push(vec![Key::ShiftLeft, Key::Comma]),
             '.' => keys.push(vec![Key::Dot]),
+            '>' => keys.push(vec![Key::ShiftLeft, Key::Dot]),
+            '/' => keys.push(vec![Key::Slash]),
+            '?' => keys.push(vec![Key::ShiftLeft, Key::Slash]),
+            '\'' => keys.push(vec![Key::Quote]),
+            '"' => keys.push(vec![Key::ShiftLeft, Key::Quote]),
+            '=' => keys.push(vec![Key::Equal]),
+            '+' => keys.push(vec![Key::ShiftLeft, Key::Equal]),
+            '`' => keys.push(vec![Key::BackQuote]),
+            '~' => keys.push(vec![Key::ShiftLeft, Key::BackQuote]),
+            '\\' => keys.push(vec![Key::BackSlash]),
+            '|' => keys.push(vec![Key::ShiftLeft, Key::BackSlash]),
+            '-' => keys.push(vec![Key::Minus]),
+            '_' => keys.push(vec![Key::ShiftLeft, Key::Minus]),
             _ => continue,
         }
     }
