@@ -1,5 +1,7 @@
 # Mycro
 
+(wip)
+
 Simple macros for Linux.
 
 ```
@@ -29,9 +31,11 @@ workemail=user@work.com
 ## TODO
 
 - [x] Read config file
-- [ ] Read from not hardcoded path
+- [x] Read from not hardcoded path
 - [x] Emit keyboard events (write)
 - [ ] Add all possible keyboard keys
   - [ ] Uppercase
-- [ ] Add tests
+  - [ ] Tab, ctrl/cmd, super, shit etc...
 - [ ] Fix backspacing during command starter 
+- [ ] Add instalation steps to README
+- [ ] test on macOS and Windows

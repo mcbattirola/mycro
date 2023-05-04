@@ -2,6 +2,7 @@
 
 # starter is a reserved word used to declare the
 # sequence of keys that start a macro.
+# defaults to |>
 starter=|>
 
 # a macro is declared as macro=result:

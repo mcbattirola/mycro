@@ -84,7 +84,7 @@ impl Mycro {
 }
 
 lazy_static! {
-    static ref MYCRO: RwLock<Mycro> = RwLock::new(read_config("/home/matheus/.config/mycro")); // TODO
+    static ref MYCRO: RwLock<Mycro> = RwLock::new(read_config()); // TODO
 }
 
 fn handle_event(event: Event) {
@@ -101,8 +101,12 @@ fn main() {
     }
 }
 
-fn read_config(filepath: &str) -> Mycro {
-    let contents = fs::read_to_string(filepath).expect("Config file not found");
+fn read_config() -> Mycro {
+    let mut filepath = dirs::config_dir().expect("Config directory not found");
+
+    filepath.push("mycro");
+
+    let contents = fs::read_to_string(filepath.as_os_str()).expect("Config file not found");
 
     let (commands, mut starter) = parser::parse_commands(&contents);
     if starter.is_empty() {

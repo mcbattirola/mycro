@@ -23,33 +23,17 @@ pub fn parse_commands(content: &str) -> (HashMap<String, Vec<Vec<Key>>>, String)
 
         let cmd_macro = parts.remove(0);
         let mut cmd_result = String::new();
-        for i in 0..parts.len() {
+        for (i, part) in parts.iter().enumerate() {
             // add back the '=' that was splitted
             if i > 0 {
                 cmd_result += "="
             }
-            cmd_result += parts[i];
+            cmd_result += part;
         }
         // join remaining parts as they may contain a '=' that got splited
 
         commands.insert(String::from(cmd_macro), str_to_keys(&cmd_result));
     });
-    commands.insert(
-        String::from("hw"),
-        vec![
-            vec![Key::KeyH],
-            vec![Key::KeyE],
-            vec![Key::KeyL],
-            vec![Key::KeyL],
-            vec![Key::KeyO],
-            vec![Key::Space],
-            vec![Key::KeyW],
-            vec![Key::KeyO],
-            vec![Key::KeyR],
-            vec![Key::KeyL],
-            vec![Key::KeyD],
-        ],
-    );
     (commands, starter)
 }
 
@@ -113,6 +97,7 @@ fn str_to_keys(s: &str) -> Vec<Vec<Key>> {
             '|' => keys.push(vec![Key::ShiftLeft, Key::BackSlash]),
             '-' => keys.push(vec![Key::Minus]),
             '_' => keys.push(vec![Key::ShiftLeft, Key::Minus]),
+            ' ' => keys.push(vec![Key::Space]),
             _ => continue,
         }
     }
