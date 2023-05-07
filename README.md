@@ -34,8 +34,7 @@ workemail=user@work.com
 - [x] Read from not hardcoded path
 - [x] Emit keyboard events (write)
 - [ ] Add all possible keyboard keys
-  - [ ] Uppercase
-  - [ ] Tab, ctrl/cmd, super, shit etc...
-- [ ] Fix backspacing during command starter 
+  - [x] Uppercase
+  - [ ] Tab, ctrl/cmd, super, shit, enter etc...
 - [ ] Add instalation steps to README
 - [ ] test on macOS and Windows

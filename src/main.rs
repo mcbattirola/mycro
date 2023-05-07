@@ -39,7 +39,13 @@ impl Mycro {
 
                     // backspace
                     if key == "\u{8}" {
-                        self.buffer.remove(self.buffer.len() - 1);
+                        let len = self.buffer.len();
+                        if len == 0 {
+                            // go back to reading last commands index
+                            self.state = CommandState::ReadingStarter(self.starter.len() - 1);
+                            return;
+                        }
+                        self.buffer.remove(len - 1);
                         return;
                     }
 
@@ -65,6 +71,14 @@ impl Mycro {
                         Some(c) => c,
                         None => return,
                     };
+
+                    // go back index on backspace
+                    if key == "\u{8}" {
+                        if index != 0 {
+                            self.state = CommandState::ReadingStarter(index - 1);
+                        }
+                        return;
+                    }
 
                     if key == c.to_string() {
                         // if found the last starter char, start reading command
