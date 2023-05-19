@@ -1,8 +1,8 @@
 # Mycro
 
-(wip)
+Simple text macros for Linux.
 
-Simple macros for Linux.
+Mycro should also work on macOS and Windows, but these are currently untested.
 
 ```
 # replace |>mail for user@email.com:
@@ -22,19 +22,14 @@ starter=|>
 
 # a macro is declared as macro=result:
 wl=hello, world
-# this means that typing `|>hw` will trigger the macro and replace it with `\>hello. world`.
+# this means that typing `|>hw` will trigger the macro and replace it with `\>hello, world`.
 
 email=user@mail.com
 workemail=user@work.com
 ```
 
-## TODO
+## TODO list
 
-- [x] Read config file
-- [x] Read from not hardcoded path
-- [x] Emit keyboard events (write)
-- [ ] Add all possible keyboard keys
-  - [x] Uppercase
-  - [ ] Tab, ctrl/cmd, super, shit, enter etc...
-- [ ] Add instalation steps to README
-- [ ] test on macOS and Windows
+- [ ] Add missing keys (shift, control, alt, del, home, etc...)
+- [ ] Setup CI/CD
+

@@ -38,10 +38,6 @@ pub fn parse_commands(content: &str) -> (HashMap<String, Vec<Vec<Key>>>, String)
 }
 
 fn str_to_keys(s: &str) -> Vec<Vec<Key>> {
-    // TODO: can't use a vector of keys.
-    // Should use something that allows us to press
-    // two different keys at the same time in order to key a uppercase
-    // os things like !@#.
     let mut keys: Vec<Vec<Key>> = vec![];
     for c in s.chars() {
         match c {
@@ -128,4 +124,37 @@ fn str_to_keys(s: &str) -> Vec<Vec<Key>> {
         }
     }
     keys
+}
+
+#[cfg(test)]
+mod tests {
+    use super::parse_commands;
+    use rdev::Key;
+
+    #[test]
+    fn parser_ignores_comments() {
+        let input = "# comment
+# another comment";
+        let (commands, _) = parse_commands(input);
+        assert_eq!(commands.keys().len(), 0);
+    }
+
+    #[test]
+    fn it_parse_multiple_commands() {
+        let input = "#ignore=true
+starter=>>
+test=b
+test2=c
+test3=a=b
+";
+        let (commands, starter) = parse_commands(input);
+        assert_eq!(starter, ">>");
+        assert_eq!(commands.get("ignore"), None);
+        assert_eq!(commands.get("test"), Some(&vec![vec![Key::KeyB]]));
+        assert_eq!(commands.get("test2"), Some(&vec![vec![Key::KeyC]]));
+        assert_eq!(
+            commands.get("test3"),
+            Some(&vec![vec![Key::KeyA], vec![Key::Equal], vec![Key::KeyB],])
+        )
+    }
 }
