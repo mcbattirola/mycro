@@ -7,5 +7,12 @@ oneshot: true
 storage:
   type: memory
 # outputs will be filled in during the completion of an access guide.
-outputs: []
+outputs:
+- type: identity
+  destination:
+    type: directory
+    # For this guide, /opt/machine-id is used as the destination directory.
+    # You may wish to customize this. Multiple outputs cannot share the same
+    # destination.
+    path: /opt/machine-id
 
