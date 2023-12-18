@@ -28,3 +28,5 @@ jobs:
       run: tbot -c ./tbot.yaml init
     - name: check credentials
       run: ls -la /opt/machine-id
+    - name: list users 
+      run: tctl users ls --identity=/opt/machine-id/identity
