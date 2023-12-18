@@ -25,6 +25,6 @@ jobs:
       with:
         version: 14.2.3
     - name: Execute Machine ID
-      run: tbot -c ./tbot.yaml
+      run: tbot -c ./tbot.yaml init
     - name: check credentials
       run: ls -la /opt/machine-id
