@@ -1,0 +1,28 @@
+# This is a basic workflow to help you get started.
+# It will take the following action whenever a push is made to the "main" branch.
+on:
+  push:
+    branches:
+    - main
+    - master
+    - machindeid
+jobs:
+  demo:
+    permissions:
+      # The "id-token: write" permission is required or Machine ID will not be
+      # able to authenticate with the cluster.
+      id-token: write
+      contents: read
+    # The name of the workflow, and the Linux distro to be used to perform the
+    # required steps.
+    name: guide-demo
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Fetch Teleport binaries
+      uses: teleport-actions/setup@v1
+      with:
+        version: 14.2.3
+    - name: Execute Machine ID
+      run: tbot -c ./tbot.yaml

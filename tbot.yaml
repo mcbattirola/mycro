@@ -1,0 +1,11 @@
+version: v2
+auth_server: matheus-eas.cloud.gravitational.io
+onboarding:
+  join_method: github
+  token: example-bot
+oneshot: true
+storage:
+  type: memory
+# outputs will be filled in during the completion of an access guide.
+outputs: []
+
