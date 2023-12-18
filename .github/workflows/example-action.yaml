@@ -29,4 +29,4 @@ jobs:
     - name: check credentials
       run: ls -la /opt/machine-id
     - name: list users 
-      run: tctl users ls --identity=/opt/machine-id/identity --auth-server=matheus-eas.cloud.gravitational.io
+      run: tsh apps ls --identity=/opt/machine-id/identity --proxy=matheus-eas.cloud.gravitational.io
