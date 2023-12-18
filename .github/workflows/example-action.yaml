@@ -28,5 +28,5 @@ jobs:
       run: tbot -c ./tbot.yaml init
     - name: check credentials
       run: ls -la /opt/machine-id
-    - name: list users 
-      run: tsh apps ls --identity=/opt/machine-id/identity --proxy=matheus-eas.cloud.gravitational.io
+    - name: list apps 
+      run: tsh -i /opt/machine-id/identity --proxy=matheus-eas.cloud.gravitational.io apps ls
